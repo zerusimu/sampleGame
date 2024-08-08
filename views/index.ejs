@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>プロゲートで学んだことの確認</title>
+  <link rel="stylesheet" href="/css/style.css"> 
+</head>
+<body>
+  <h1>Hello World</h1>
+  <h2>ハロー　ニイハオ　こんにちわ</h2>
+  <% const item = {id: 'ID', name: 'とまと'} %>
+
+ <p>
+  <%= item.id %>
+  <%= item.name %>
+ </p> 
+<form action="/" method="post" enctype="multipart/form-data">
+<h3>画像をアップロードする</h3>
+<input type="file" name="imageFile" accept="image/*" >
+<input type="submit" >
+</form>
+<div>
+ 
+
+
+  <p>↓に画像を表示</p>
+  <img src="/images/gapu.jpg">
+  <img src="/images/sample1.jpeg" alt="">
+
+
+  <% web.forEach((item) => { %>
+    <li>
+      <div>
+        <span><%= item.id %></span>
+        <span><%= item.imageName %></span>
+      </div>
+    </li>
+    <% }) %>
+
+<%= /*  web[0] ["imageName"] */ %>
+
+
+
+ 
+
+</div>
+</body>
+</html>

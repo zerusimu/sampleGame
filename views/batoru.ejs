@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>戦闘画面</title>
+  <link rel="stylesheet" href="/css/style.css"> 
+
+
+
+ 
+
+
+
+</head>
+<body onload="aaa()">
+
+  <%- include('header'); %>
+  
+  <% if(locals.isLoggedIn) { %>
+
+<% var kekka = 100; %>
+
+<table border="1">
+<tr>
+  <th>敵の名前</th>
+  <th>レベル</th>
+  <th>兵数</th>
+  <th>攻撃力</th>
+  <th>防御力</th>
+</tr>
+
+  <%  batoru.forEach((batoru1) => { %>
+    <tr>
+  <td><%= batoru1.namae2 %></td>
+  <td><%= batoru1.reberu %></td>
+  <td><%= batoru1.heisuu2 %></td> 
+  <td><%= batoru1.kougeki2 %></td> 
+  <td><%= batoru1.bougyo2 %></td>   
+</tr>
+
+<% }) %>
+
+</table>
+
+<table border="1">
+  <tr>
+    <th>自分の名前</th>
+    <th>兵の名前</th>
+    <th>兵数</th>
+  </tr>
+  
+    <%  batoru.forEach((batoru1) => { %>
+      <tr>
+    <td><%= batoru1.username %></td>
+    <td><%= batoru1.heisyu %></td>
+    <td><%= batoru1.heisuu %></td>
+  </tr>
+  <% }) %>
+  
+  </table>
+
+  <table border="1">
+    <tr>
+      <th>扱う兵種の名前</th>
+      <th>攻撃力</th>
+      <th>防御力</th>
+    </tr>
+    
+      <%  batoru.forEach((batoru1) => { %>
+        <tr>
+      <td><%= batoru1.namae %></td>
+      <td><%= batoru1.kougeki %></td>
+      <td><%= batoru1.bougyo %></td>
+
+      <div>
+     
+       </div>
+    </tr>
+  </table>
+  <%  var dame1 = (batoru1.kougeki + batoru1.buki +  (batoru1.kougekiryoku / 10) - batoru1.bougyo2) / 10 ; %>
+  <% dame1 = parseInt( dame1 ); %>
+  <% if(dame1 <= 0) { %>
+    <% dame1 = 1; } %>
+  <div>
+    相手に与える最大ダメージ<%= dame1 %>
+   </div>
+   <%  var dame2 = (batoru1.kougeki2 - batoru1.bougyo  - batoru1.bougu - ( batoru1.bougyoryoku / 10 ) ) /10 ; %>
+  <% dame2 = parseInt( dame2 ); %>
+  <% if(dame2 <= 0) { %>
+<% dame2 = 1; } %>
+  <div>
+    自分に受ける最大ダメージ<%= dame2 %>
+   </div>
+<% for(;;) { %>
+  <%  var random1 = Math.floor( Math.random() * dame1 + 1 ); %>
+  <% batoru1.heisuu2 = batoru1.heisuu2 - random1 %>
+  <%  var random2 = Math.floor( Math.random() * dame2 + 1 ); %>
+  <% batoru1.heisuu = batoru1.heisuu - random2 %>
+<div> 
+ <%= batoru1.username %> の兵数は <%= batoru1.heisuu %>(- <%= random2 %> ) 
+ <%= batoru1.namae2 %> の兵数は <%= batoru1.heisuu2 %> ( - <%= random1 %> ) 
+</div>
+ <% if(batoru1.heisuu2 <= 0) { %>
+    <div>
+      戦闘に勝利した。
+    </div>  
+    <% break; %> 
+  <% } %>
+  <%  if(batoru1.heisuu <= 0){ %>
+    <div>
+      戦闘に敗北した。
+    </div>  
+    <% break; %> 
+ <% } %>
+<% } %>
+
+
+<script>
+  const bbb = <%= batoru1.heisuu %>; 
+  const keikenti = <%= batoru1.keikenti %>;  
+  function aaa(){
+            // 送信する複数のデータ
+            var kekka = {
+                name: 'John Doe',
+                age: 30,
+                email: 'john.doe@example.com',
+                heisuu3: bbb,
+                keikenti: keikenti
+            };
+
+            // AJAXリクエストを作成
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/updateData', true);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+            // レスポンスが返ってきたときの処理
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(kekka.heisuu3);
+                }
+            };
+
+            // データを送信
+            xhr.send(JSON.stringify(kekka));
+        };
+  </script>
+
+
+
+    <% }) %>
+   
+   <button id="reloadButton">同じ敵と戦う（更新する）</button>
+<li><a href="/teki">前の画面に戻る</a></li>
+<li><a href="/game">最初のゲーム画面に戻る</a></li>
+    <% } else { %>
+<p>ログインされてないので、ログインしてください。</p>
+      <a class="btn" href="/login">ログイン</a>
+      <% } %>
+
+</div>
+
+<script>
+    document.getElementById('reloadButton').addEventListener('click', function() {
+      // ページをリロードする（同じ敵と対戦します）
+      location.reload();
+    });
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画像アップロード</title>
+  <link rel="stylesheet" href="/css/style.css"> 
+</head>
+<body>
+
+  <%- include('header'); %>
+  
+  <% if(locals.isLoggedIn) { %>
+
+<form action="/create" method="post" enctype="multipart/form-data">
+<h3>画像をアップロードする</h3>
+<input type="file" name="imageFile" accept="image/*" >
+<input type="submit" >
+</form>
+
+<a href="/new" class="new-button">+ 新規作成</a>
+
+<div>
+ 
+ 
+
+  <p>↓に画像を表示</p>
+
+  <%  items.forEach((item) => { %>
+      <div class="yokonarabe">
+        <span><%= item.id %></span>
+        <span > <img class="gazou"  src="/images/<%=item.imageName%>"> </span>
+
+        <form action="/delete/<%= item.id %>" method="POST">
+          <input type="submit" value="削除">
+        </form>
+        <a href="/edit/<%= item.id %>">編集</a>
+        <form action="/sentaku/<%= item.imageName%>" method="POST">
+<input type="submit" value="選択">
+        </form>
+      </div>
+    <% }) %>
+    <% } else { %>
+<p>ログインされてないので、みる事ができません。ログインしてください。</p>
+      <a class="btn" href="/login">ログイン</a>
+      <% } %>
+
+</div>
+</body>
+</html>

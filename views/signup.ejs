@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>登録画面</title>
+  </head>
+  <body>
+          <h2>新規登録</h2>
+
+          <% if (errors.length > 0) { %>
+            <ul class="errors">
+              <!-- forEachメソッドを用いて、エラーメッセージ表示してください -->
+              <% errors.forEach(error =>{  %>
+              <li> <%= error %></li>
+              <% }); %>
+            </ul>
+          <% } %>
+
+          <form action="/signup" method="post">
+            <p>ユーザー名</p>
+            <input type="text" name="username">
+            <p>登録するID</p>
+            <input type="text" name="userID">
+            <p>パスワード</p>
+            <input type="password" name="pass">
+            <input type="submit" value="登録する">
+          </form>
+          <a href="/">トップに戻る</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>プロゲートで学んだことの確認</title>
+  <link rel="stylesheet" href="/css/style.css"> 
+</head>
+<body>
+
+<form >
+<h3>画像の編集</h3>
+<span > <img class="gazou" src="/images/<%=item.imageName %>"> </span>
+<form action="/update/ <%= item.id %>"  method="post" enctype="multipart/form-data">
+  <!--
+ <input name="imageName" type="file" >
+  <input type="submit" value="変更する" >
+  -->
+ 
+</form>
+
+<div>
+  <form action="/update/ <%= item.id %>"  method="post" enctype="multipart/form-data">
+    <input name="imageName" type="file" >
+    <input type="submit" value="変更する" >
+  </form>
+  <a href="/index2"></span>前の画面にもどる</a>
+
+</div>
+</body>
+</html>

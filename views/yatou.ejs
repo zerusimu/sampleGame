@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>兵を雇う</title>
+  <link rel="stylesheet" href="/css/style.css"> 
+</head>
+<body>
+
+  <%- include('header'); %>
+  
+  <% if(locals.isLoggedIn) { %>
+
+<div class="sute-tasu">
+  <%  sute.forEach((sute1) => { %>
+  <div>攻撃力:<%= sute1.kougekiryoku %></div>
+  <div>防御力:<%= sute1.bougyoryoku %></div>
+  <div>魔法攻撃力:<%= sute1.mahoukougeki %></div>
+  <div>魔法防御力:<%= sute1.mahoubougyo %></div>
+</div>
+
+<div class="sute-tasu">
+  <div>所持金:<%= sute1.syozikin %></div>
+  <div>米:<%= sute1.kome %></div>
+</div>
+
+<div class="sute-tasu">
+<div class="supe-su">武器の名前:<%= sute1.bukinonamae %></div>
+  <div class="supe-su">武器の攻撃力:<%= sute1.buki %></div>
+  <div class="supe-su">防具の名前:<%= sute1.bougunonamae %></div>
+  <div>防具の防御力:<%= sute1.bougu %></div>
+</div>
+<div class="sute-tasu">
+  <div class="supe-su">書物の名前:<%= sute1.syomotunonamae %></div>
+  <div>書物の威力:<%= sute1.syomotu %></div>
+  <div class="supe-su">旗の名前:<%= sute1.hatanonamae %></div>
+  <div>旗の威力:<%= sute1.hata %></div>
+</div>
+
+<div class="sute-tasu">
+  <div>兵の名前:<%= sute1.heisyu %></div>
+  <div>兵数:<%= sute1.heisuu %></div>
+  <div>階級:<%= sute1.kaikyuu %></div>
+</div>
+<% }) %>
+
+
+
+
+<table border="1">
+<tr>
+  <th>名前</th>
+  <th>攻撃力</th>
+  <th>防御力</th>
+  <th>１人雇う費用</th>
+  <th>必要な階級</th>
+  <th>必要なステータス</th>
+  <th>コメント</th>
+  <th>雇う人数</th>
+</tr>
+
+  <%  yatou.forEach((yatou1) => { %>
+    <tr>
+  <td><%= yatou1.namae %></td>
+  <td><%= yatou1.kougeki %></td>
+  <td><%= yatou1.bougyo %></td>
+  <td><%= yatou1.hiyou %></td>
+  <td><%= yatou1.kaikyuu %></td>
+  <td><%= yatou1.hituyousute %></td>
+ <td><%= yatou1.nouryokumemo %></td>  
+  <td>
+  
+    <form action="/yatou2/<%= yatou1.id %>" method="POST">
+      <input type="number" name="ninzuu">
+      <input type="submit" value="雇う">
+    </form>
+  </td>
+ 
+</tr>
+<% }) %>
+
+</table>
+ 
+
+
+
+
+<li><a href="/game">前の画面に戻る</a></li>
+
+    <% } else { %>
+<p>ログインされてないので、ログインしてください。</p>
+      <a class="btn" href="/login">ログイン</a>
+      <% } %>
+
+</div>
+</body>
+</html>

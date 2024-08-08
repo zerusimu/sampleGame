@@ -1,0 +1,17 @@
+<header>
+  <div class="header-nav">
+    <a href="/">トップページ</a>
+    <i></i>
+    <p>ようこそ、<%= locals.username %>さん</p>
+  <span> <img class="gazou" src="/images/<%=locals.gazou%>"> </span>
+    <ul>
+      <li><a href="/index2">画像アップロード</a></li>
+      <li><a href="/game">ゲーム</a></li>
+      <% if(locals.isLoggedIn)  { %>
+        <li><a href="/logout">ログアウト</a></li>
+        <% } else { %>
+        <li><a href="/login">ログイン</a></li>
+        <% } %>
+    </ul>
+  </div>
+</header>

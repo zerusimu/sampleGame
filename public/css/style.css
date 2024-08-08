@@ -1,0 +1,25 @@
+p{
+  color:blue
+}
+h2{
+  color:red
+}
+h1{
+  color:brown
+}
+
+.gazou{
+  width: 300px;
+  height:300px;
+}
+
+.yokonarabe{
+  display: flex;
+}
+.sute-tasu{
+  display: flex;
+}
+
+.supe-su{
+  margin: 0px 5px 0px 0px;
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ゲームの最初の画面</title>
+  <link rel="stylesheet" href="/css/style.css"> 
+</head>
+<body>
+
+  <%- include('header'); %>
+  
+  <% if(locals.isLoggedIn) { %>
+<div>
+<span><a href="/hazimete">ゲームの説明を読む</a></span>
+</div>
+
+<div class="sute-tasu">
+  <%  sute.forEach((sute1) => { %>
+  <div>攻撃力:<%= sute1.kougekiryoku %></div>
+  <div>防御力:<%= sute1.bougyoryoku %></div>
+  <div>魔法攻撃力:<%= sute1.mahoukougeki %></div>
+  <div>魔法防御力:<%= sute1.mahoubougyo %></div>
+</div>
+
+<div class="sute-tasu">
+  <div>所持金:<%= sute1.syozikin %></div>
+  <div>米:<%= sute1.kome %></div>
+</div>
+
+<div class="sute-tasu">
+<div class="supe-su">武器の名前:<%= sute1.bukinonamae %></div>
+  <div class="supe-su">武器の攻撃力:<%= sute1.buki %></div>
+  <div class="supe-su">防具の名前:<%= sute1.bougunonamae %></div>
+  <div>防具の防御力:<%= sute1.bougu %></div>
+</div>
+<div class="sute-tasu">
+  <div class="supe-su">書物の名前:<%= sute1.syomotunonamae %></div>
+  <div>書物の威力:<%= sute1.syomotu %></div>
+  <div class="supe-su">旗の名前:<%= sute1.hatanonamae %></div>
+  <div>旗の威力:<%= sute1.hata %></div>
+</div>
+
+<div class="sute-tasu">
+  <div>兵の名前:<%= sute1.heisyu %></div>
+  <div>兵数:<%= sute1.heisuu %></div>
+  <div>階級:<%= sute1.kaikyuu %></div>
+</div>
+<% if(sute1.syozikin >= 1000) { %>
+
+  <div class="sute-tasu">
+    <form action="/kougekiryokuUP/" method="POST">
+      <input type="submit" value="所持金を１０００消費して、攻撃力を１上げる">
+    </form>
+    <form action="/bougyoryokuUP/" method="POST">
+      <input type="submit" value="所持金を１０００消費して、防御力を１上げる">
+    </form>
+  </div>
+  <div class="sute-tasu">
+    <form action="/mahoukougekiUP/" method="POST">
+      <input type="submit" value="所持金を１０００消費して、魔法攻撃を１上げる">
+    </form>
+    <form action="/mahoubougyoUP/" method="POST">
+      <input type="submit" value="所持金を１０００消費して、魔法防御を１上げる">
+    </form>
+  </div>
+
+ 
+
+<% } else { %>
+<p>
+  所持金が１０００以上あればパラメータをあげられます
+</p>
+<form action="/syozikinUP/" method="POST">
+  <input type="submit" value="所持金を１００００増やす">
+</form>
+<% } %>
+
+
+<div class = "sute-tasu">
+  <span><a href="/yatou">兵を雇う</a></span>
+</div>
+
+<div class = "sute-tasu">
+  <span class="supe-su"><a href="/buki">武器を買う</a></span>
+  <span class="supe-su"> <a href="/bougu">防具を買う</a></span>
+</div>
+
+<div class = "sute-tasu">
+  <span class="supe-su"><a href="/syomotu">書物を買う（魔法攻撃が上がる）</a></span>
+  <span class="supe-su"><a href="/hata">旗を買う（魔法防御が上がる）</a></span>
+</div>
+
+<% if(sute1.heisuu <=  0) { %>
+  <div>
+    兵を雇うと戦う事ができます。
+  </div>
+  <% } else { %>
+    <div>
+      兵がいるので戦う事ができます。
+    </div>
+<div class = "sute-tasu">
+  <span><a href="/teki">敵と戦う</a></span>
+</div>
+<% } %>
+
+<% }) %>
+
+    <% } else { %>
+<p>ログインされてないので、ログインしてください。</p>
+      <a class="btn" href="/login">ログイン</a>
+      <% } %>
+
+</div>
+</body>
+</html>

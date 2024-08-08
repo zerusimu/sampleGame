@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>防具を買う</title>
+  <link rel="stylesheet" href="/css/style.css"> 
+</head>
+<body>
+
+  <%- include('header'); %>
+  
+  <% if(locals.isLoggedIn) { %>
+
+
+
+<table border="1">
+<tr>
+  <th>防具の名前</th>
+  <th>防御力</th>
+  <th>値段</th>
+</tr>
+
+  <%  bougu.forEach((bougu1) => { %>
+    <tr>
+  <td><%= bougu1.namae %></td>
+  <td><%= bougu1.bougyo %></td>
+  <td><%= bougu1.nedan %></td>
+
+  
+  <td>
+    <form action="/bougu2/<%= bougu1.id %>" method="POST">
+      <input type="submit" value="買う">
+    </form>
+  </td>
+ 
+</tr>
+<% }) %>
+
+</table>
+ 
+
+
+
+
+<li><a href="/game">前の画面に戻る</a></li>
+
+    <% } else { %>
+<p>ログインされてないので、ログインしてください。</p>
+      <a class="btn" href="/login">ログイン</a>
+      <% } %>
+
+</div>
+</body>
+</html>

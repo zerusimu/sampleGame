@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>敵一覧</title>
+  <link rel="stylesheet" href="/css/style.css"> 
+</head>
+<body>
+
+  <%- include('header'); %>
+  
+  <% if(locals.isLoggedIn) { %>
+
+
+
+<table border="1">
+<tr>
+  <th>敵の名前</th>
+  <th>レベル</th>
+</tr>
+
+  <%  teki.forEach((teki1) => { %>
+    <tr>
+  <td><%= teki1.namae2 %></td>
+  <td><%= teki1.reberu %></td>
+
+  
+  <td>
+    <form action="/teki2/<%= teki1.id %>" method="POST">
+      <input type="submit" value="戦う">
+    </form>
+  </td>
+ 
+</tr>
+<% }) %>
+
+</table>
+ 
+
+
+
+
+<li><a href="/game">前の画面に戻る</a></li>
+
+    <% } else { %>
+<p>ログインされてないので、ログインしてください。</p>
+      <a class="btn" href="/login">ログイン</a>
+      <% } %>
+
+</div>
+</body>
+</html>

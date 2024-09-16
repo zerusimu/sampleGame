@@ -18,13 +18,14 @@
 <tr>
   <th>敵の名前</th>
   <th>レベル</th>
+  <th>メモ</th>
 </tr>
 
   <%  teki.forEach((teki1) => { %>
     <tr>
   <td><%= teki1.namae2 %></td>
   <td><%= teki1.reberu %></td>
-
+  <td><%= teki1.memo %></td>
   
   <td>
     <form action="/teki2/<%= teki1.id %>" method="POST">

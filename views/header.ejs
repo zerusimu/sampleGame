@@ -1,11 +1,16 @@
 <header>
+
   <div class="header-nav">
-    <a href="/">トップページ</a>
-    <i></i>
+  <div class = menu >
+   <div class= menu2> <a href="/">クリック型RPGゲーム</a> </div>
+    <div class= menu2><a href='/purofi-ru'>自己紹介・簡単な経歴</a></div>
+    <div class= menu2><a href='/saito'>他のサイトの制作物</a></div>
+    <div class= menu2><a href='/gamesetumei'>ゲームの説明、こだわり</a></div>
+    </div>
     <p>ようこそ、<%= locals.username %>さん</p>
   <span> <img class="gazou" src="/images/<%=locals.gazou%>"> </span>
     <ul>
-      <li><a href="/index2">画像アップロード</a></li>
+      <li><a href="/index2">画像のアップロード＆画像変更</a></li>
       <li><a href="/game">ゲーム</a></li>
       <% if(locals.isLoggedIn)  { %>
         <li><a href="/logout">ログアウト</a></li>

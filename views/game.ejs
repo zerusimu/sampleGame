@@ -12,15 +12,15 @@
   
   <% if(locals.isLoggedIn) { %>
 <div>
-<span><a href="/hazimete">ゲームの説明を読む</a></span>
+<%# <span><a href="/hazimete">ゲームの説明を読む</a></span> %>
 </div>
 
 <div class="sute-tasu">
   <%  sute.forEach((sute1) => { %>
   <div>攻撃力:<%= sute1.kougekiryoku %></div>
   <div>防御力:<%= sute1.bougyoryoku %></div>
-  <div>魔法攻撃力:<%= sute1.mahoukougeki %></div>
-  <div>魔法防御力:<%= sute1.mahoubougyo %></div>
+  <div>魔法攻撃力:<%= sute1.mahoukougekiryoku %></div>
+  <div>魔法防御力:<%= sute1.mahoubougyoryoku %></div>
 </div>
 
 <div class="sute-tasu">
@@ -109,6 +109,8 @@
     <% } else { %>
 <p>ログインされてないので、ログインしてください。</p>
       <a class="btn" href="/login">ログイン</a>
+      <p>登録がまだの方は新規登録（無料）お願いします。</p>
+       <a href='/signup'>新規登録</a>
       <% } %>
 
 </div>

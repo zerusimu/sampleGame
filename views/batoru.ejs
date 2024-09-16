@@ -28,6 +28,8 @@
   <th>兵数</th>
   <th>攻撃力</th>
   <th>防御力</th>
+  <th>魔法攻撃力</th>
+   <th>魔法防御力</th>
 </tr>
 
   <%  batoru.forEach((batoru1) => { %>
@@ -36,7 +38,9 @@
   <td><%= batoru1.reberu %></td>
   <td><%= batoru1.heisuu2 %></td> 
   <td><%= batoru1.kougeki2 %></td> 
-  <td><%= batoru1.bougyo2 %></td>   
+  <td><%= batoru1.bougyo2 %></td>
+<td><%= batoru1.mahoukougeki2 %></td>     
+<td><%= batoru1.mahoubougyo2 %></td>     
 </tr>
 
 <% }) %>
@@ -48,6 +52,7 @@
     <th>自分の名前</th>
     <th>兵の名前</th>
     <th>兵数</th>
+    <th>米</th>
   </tr>
   
     <%  batoru.forEach((batoru1) => { %>
@@ -55,6 +60,7 @@
     <td><%= batoru1.username %></td>
     <td><%= batoru1.heisyu %></td>
     <td><%= batoru1.heisuu %></td>
+ 　<td><%= batoru1.kome %></td>    
   </tr>
   <% }) %>
   
@@ -65,6 +71,8 @@
       <th>扱う兵種の名前</th>
       <th>攻撃力</th>
       <th>防御力</th>
+      <th>魔法攻撃力</th>
+      <th>魔法防御力</th>      
     </tr>
     
       <%  batoru.forEach((batoru1) => { %>
@@ -72,28 +80,78 @@
       <td><%= batoru1.namae %></td>
       <td><%= batoru1.kougeki %></td>
       <td><%= batoru1.bougyo %></td>
-
+      <td><%= batoru1.mahoukougeki %></td>
+      <td><%= batoru1.mahoubougyo %></td>
       <div>
      
        </div>
     </tr>
   </table>
-  <%  var dame1 = (batoru1.kougeki + batoru1.buki +  (batoru1.kougekiryoku / 10) - batoru1.bougyo2) / 10 ; %>
-  <% dame1 = parseInt( dame1 ); %>
-  <% if(dame1 <= 0) { %>
-    <% dame1 = 1; } %>
-  <div>
-    相手に与える最大ダメージ<%= dame1 %>
-   </div>
-   <%  var dame2 = (batoru1.kougeki2 - batoru1.bougyo  - batoru1.bougu - ( batoru1.bougyoryoku / 10 ) ) /10 ; %>
-  <% dame2 = parseInt( dame2 ); %>
-  <% if(dame2 <= 0) { %>
-<% dame2 = 1; } %>
+  <% if(batoru1.heisuu <= 0) { %>
+    <div>
+    戦う兵がいないので、戦えません。
+ </div>
+    <% return; %>
+  <% } %>
+<% 
+var dame1;
+if (batoru1.buturi_mahou_dotti == 0) { 
+  var buturidame1 = (batoru1.kougeki + batoru1.buki + (batoru1.kougekiryoku / 10) - batoru1.bougyo2) / 10;
+  buturidame1 = parseInt(buturidame1);
+  if (buturidame1 <= 0) { 
+    buturidame1 = 1; 
+  }
+  dame1 = buturidame1;
+} else if (batoru1.buturi_mahou_dotti == 1) { 
+  var mahoudame1 = (batoru1.mahoukougeki + batoru1.syomotu + (batoru1.mahoukougekiryoku / 10) - batoru1.mahoubougyo2) / 10;
+  mahoudame1 = parseInt(mahoudame1);
+  if (mahoudame1 <= 0) { 
+    mahoudame1 = 1; 
+  }
+  dame1 = mahoudame1;
+}
+%>
+
+<div>
+  相手に与える最大ダメージ: <%= dame1 %>
+</div>
+
+<% 
+var dame2;
+if (batoru1.buturi_mahou_dotti2 == 0) { 
+      var buturidame2 = (batoru1.kougeki2 - batoru1.bougyo  - batoru1.bougu - ( batoru1.bougyoryoku / 10 ) ) /10 ; 
+   buturidame2 = parseInt(buturidame2); 
+   if(buturidame2 <= 0) { 
+ buturidame2 = 1; } 
+
+dame2 = buturidame2;
+} else if(batoru1.buturi_mahou_dotti2 == 1)
+{
+   var mahoudame2 = (batoru1.mahoukougeki2 - batoru1.mahoubougyo  - batoru1.hata - ( batoru1.mahoubougyoryoku / 10 ) ) /10 ; 
+   mahoudame2 = parseInt(mahoudame2); 
+   if(mahoudame2 <= 0) { 
+ mahoudame2 = 1; 
+ } 
+dame2 = mahoudame2;
+}
+%>
   <div>
     自分に受ける最大ダメージ<%= dame2 %>
    </div>
 <% for(;;) { %>
+
   <%  var random1 = Math.floor( Math.random() * dame1 + 1 ); %>
+
+<% if(batoru1.buturi_mahou_dotti == 1){ %>
+<%  if(batoru1.kome >= 100) { %>  
+<% batoru1.kome = batoru1.kome - 100; %>
+<div>魔法を使うのにお腹がへった。お米を１００消費した。</div>
+<div>残りのお米は<%= batoru1.kome %>です。</div>
+<% } else  { %>
+   <%   random1 = 1; %>
+<div>お米が足りない。攻撃力が１になった。</div>
+ <%  }} %>
+
   <% batoru1.heisuu2 = batoru1.heisuu2 - random1 %>
   <%  var random2 = Math.floor( Math.random() * dame2 + 1 ); %>
   <% batoru1.heisuu = batoru1.heisuu - random2 %>
@@ -101,16 +159,27 @@
  <%= batoru1.username %> の兵数は <%= batoru1.heisuu %>(- <%= random2 %> ) 
  <%= batoru1.namae2 %> の兵数は <%= batoru1.heisuu2 %> ( - <%= random1 %> ) 
 </div>
+
+
+
  <% if(batoru1.heisuu2 <= 0) { %>
     <div>
-      戦闘に勝利した。
+      戦闘に勝利した。階級が、<%= batoru1.keikenti %> 増えた。
     </div>  
+     <div>
+      所持金が、<%= batoru1.okane %> 増えた。
+      お米が <%= batoru1.kome2 %> 増えた。
+    </div>  
+    <% if(batoru1.heisuu <= 0) { %>
+ <% batoru1.heisuu = 0 %>
+    <% } %>
     <% break; %> 
   <% } %>
   <%  if(batoru1.heisuu <= 0){ %>
     <div>
       戦闘に敗北した。
     </div>  
+     <%  batoru1.heisuu = 0 %>
     <% break; %> 
  <% } %>
 <% } %>
@@ -119,14 +188,18 @@
 <script>
   const bbb = <%= batoru1.heisuu %>; 
   const keikenti = <%= batoru1.keikenti %>;  
+  const syozikin =  <%= batoru1.syozikin +  batoru1.okane %>;  
+  const kome = <%= batoru1.kome +  batoru1.kome2 %>;  
   function aaa(){
             // 送信する複数のデータ
             var kekka = {
-                name: 'John Doe',
-                age: 30,
-                email: 'john.doe@example.com',
+             //   name: 'John Doe',
+             //   age: 30,
+             //   email: 'john.doe@example.com',
                 heisuu3: bbb,
-                keikenti: keikenti
+                keikenti: keikenti,
+                syozikin: syozikin,
+                kome: kome,
             };
 
             // AJAXリクエストを作成
@@ -137,7 +210,7 @@
             // レスポンスが返ってきたときの処理
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log(kekka.heisuu3);
+                  
                 }
             };
 

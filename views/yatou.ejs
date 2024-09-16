@@ -16,8 +16,8 @@
   <%  sute.forEach((sute1) => { %>
   <div>攻撃力:<%= sute1.kougekiryoku %></div>
   <div>防御力:<%= sute1.bougyoryoku %></div>
-  <div>魔法攻撃力:<%= sute1.mahoukougeki %></div>
-  <div>魔法防御力:<%= sute1.mahoubougyo %></div>
+  <div>魔法攻撃力:<%= sute1.mahoukougekiryoku %></div>
+  <div>魔法防御力:<%= sute1.mahoubougyoryoku %></div>
 </div>
 
 <div class="sute-tasu">
@@ -47,12 +47,15 @@
 
 
 
+<div class="box">
 
 <table border="1">
 <tr>
   <th>名前</th>
   <th>攻撃力</th>
   <th>防御力</th>
+  <th>魔法攻撃力</th>
+ <th>魔法防御力</th>  
   <th>１人雇う費用</th>
   <th>必要な階級</th>
   <th>必要なステータス</th>
@@ -65,24 +68,23 @@
   <td><%= yatou1.namae %></td>
   <td><%= yatou1.kougeki %></td>
   <td><%= yatou1.bougyo %></td>
+ <td><%= yatou1.mahoukougeki %></td>
+  <td><%= yatou1.mahoubougyo %></td>  
   <td><%= yatou1.hiyou %></td>
   <td><%= yatou1.kaikyuu %></td>
   <td><%= yatou1.hituyousute %></td>
  <td><%= yatou1.nouryokumemo %></td>  
-  <td>
+
   
     <form action="/yatou2/<%= yatou1.id %>" method="POST">
-      <input type="number" name="ninzuu">
-      <input type="submit" value="雇う">
+  <td><input type="number" name="ninzuu"></td>
+  <td><input type="submit" value="雇う"></td>
     </form>
-  </td>
- 
 </tr>
 <% }) %>
 
 </table>
- 
-
+</div>
 
 
 

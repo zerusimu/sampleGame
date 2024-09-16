@@ -50,7 +50,17 @@ app.use(fileupload());
 
 
 
-
+/*
+ネットにあげてあるmysqlにアクセスするためのものです。
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'YourNewStrongPassword123!',
+  port: "3306",
+  database: 'imageProgate',
+  multipleStatements: true
+});
+*/
 
 
 
@@ -59,13 +69,37 @@ const connection = mysql.createConnection({
   user: 'root',
   password: 'root',
   port: "8889",
-  database: 'image-progate',
+  database: 'imageProgate',
   multipleStatements: true  
 });
+
+connection.connect((err) => {
+  if (err) {
+    console.error('データベース接続エラー: ' + err.stack);
+    return;
+  }
+  console.log('データベースに接続しました');
+});
+
+
+
 
 app.get('/', (req, res) => {
   res.render('top.ejs');
 });
+
+app.get('/purofi-ru', (req, res) => {
+  res.render('purofi-ru.ejs');
+});
+
+app.get('/saito', (req, res) => {
+  res.render('saito.ejs');
+});
+
+app.get('/gamesetumei', (req, res) => {
+  res.render('gamesetumei.ejs');
+});
+
 
 app.get('/index2', (req, res) => {
 
@@ -478,7 +512,7 @@ app.get('/hazimete', (req, res) => {
           try {
               // heiテーブルのデータを取得
               const heiResults = await new Promise((resolve, reject) => {
-                  connection.query('SELECT * FROM hei', (error, results) => {
+                  connection.query('SELECT * FROM hei ', (error, results) => {
                       if (error) return reject(error);
                       resolve(results);
                   });
@@ -486,7 +520,9 @@ app.get('/hazimete', (req, res) => {
       
               // userテーブルのデータを取得
               const userResults = await new Promise((resolve, reject) => {
-                  connection.query('SELECT * FROM user', (error, results) => {
+                  connection.query('SELECT * FROM user WHERE username=? ',
+                    [res.locals.username],
+                     (error, results) => {
                       if (error) return reject(error);
                       resolve(results);
                   });
@@ -605,17 +641,69 @@ console.log(aaa + "人数");
         });
         
 
-        app.post('/buki2/:id', (req, res) => { 
-       connection.query(
-  'UPDATE   user A , buki B SET A.syozikin = A.syozikin - B.nedan , A.bukinonamae= B.namae, A.buki= B.kougeki WHERE A.username=? AND  B.id=?',
-   [res.locals.username,req.params.id],
-  (error,results) =>{
-    
-    res.redirect('/game');
-  }
-       )   
-
-        });
+        app.post('/buki2/:id', (req, res) => {
+          
+          const getUserData = new Promise((resolve, reject) => {
+            connection.query(
+           'SELECT kaikyuu , syozikin , heisyu , heisuu FROM user WHERE username = ?',
+           [res.locals.username],
+            (error,results) =>{
+              console.log(results[0]);
+             resolve(results[0]);
+              return;
+            }
+            );
+          });
+  
+  const getbukiData = new Promise((resolve, reject) => {        
+  connection.query(
+    'SELECT namae , kougeki , nedan FROM buki WHERE id = ?',
+    [req.params.id],
+      (error2,results2) =>{
+   console.log(results2[0]);
+     resolve(results2[0]);
+   return;
+      }
+  );
+      });
+  
+      Promise.all([getUserData, getbukiData])
+      .then(([userData, bukiData]) => {
+        const  ninzuu = Number(req.body.ninzuu); 
+        const userKaikyuu = Number(userData.kaikyuu);
+        const userSyozikin = Number(userData.syozikin);
+        const userHeisyu = userData.heisyu;
+        const userHeisuu =  Number(userData.heisuu);
+        const bukiNedan = Number(bukiData.nedan);
+        const bukiKougeki = Number(bukiData.kougeki);
+        const bukiNamae = bukiData.namae;
+  
+        if (userSyozikin >= bukiNedan ) {
+          console.log("武器を買えます");
+         connection.query(
+   'UPDATE   user A , buki B SET A.syozikin = A.syozikin - B.nedan , A.bukinonamae= B.namae, A.buki= B.kougeki WHERE A.username=? AND  B.id=?',
+     [res.locals.username,req.params.id],
+    (error,results) =>{
+      res.redirect('/game');
+    }
+         )   
+  
+        } 
+        /*
+        else if(userKaikyuu < bukiKaikyuu ) {
+          console.log("雇えない");
+          res.send("階級が足りません");
+        }
+          */
+        else if (userSyozikin < bukiNedan){
+          console.log("雇えない");
+          res.send("所持金が足りません");
+        }
+      })
+  
+         
+  
+          });
 
         app.get('/bougu', (req, res) => {
           
@@ -632,16 +720,66 @@ console.log(aaa + "人数");
        });
 
        app.post('/bougu2/:id', (req, res) => { 
-        connection.query(
-   'UPDATE   user A , bougu B SET A.syozikin = A.syozikin - B.nedan , A.bougunonamae= B.namae, A.bougu= B.bougyo WHERE A.username=? AND  B.id=?',
-    [res.locals.username,req.params.id],
-   (error,results) =>{
-     
-     res.redirect('/game');
-   }
-        )   
- 
-         });
+         
+        const getUserData = new Promise((resolve, reject) => {
+          connection.query(
+         'SELECT kaikyuu , syozikin , heisyu , heisuu FROM user WHERE username = ?',
+         [res.locals.username],
+          (error,results) =>{
+            console.log(results[0]);
+           resolve(results[0]);
+            return;
+          }
+          );
+        });
+
+const getbouguData = new Promise((resolve, reject) => {        
+connection.query(
+  'SELECT namae , bougyo , nedan FROM bougu WHERE id = ?',
+  [req.params.id],
+    (error2,results2) =>{
+ console.log(results2[0]);
+   resolve(results2[0]);
+ return;
+    }
+);
+    });
+
+    Promise.all([getUserData, getbouguData])
+    .then(([userData, bouguData]) => {
+      const  ninzuu = Number(req.body.ninzuu); 
+      const userKaikyuu = Number(userData.kaikyuu);
+      const userSyozikin = Number(userData.syozikin);
+      const userHeisyu = userData.heisyu;
+      const userHeisuu =  Number(userData.heisuu);
+      const bouguNedan = Number(bouguData.nedan);
+      const bouguBougyo = Number(bouguData.bougyo);
+      const bouguNamae = bouguData.namae;
+
+      if (userSyozikin >= bouguNedan ) {
+        console.log("防具を買えます");
+       connection.query(
+ 'UPDATE   user A , bougu B SET A.syozikin = A.syozikin - B.nedan , A.bougunonamae= B.namae, A.bougu= B.bougyo WHERE A.username=? AND  B.id=?',
+   [res.locals.username,req.params.id],
+  (error,results) =>{
+    res.redirect('/game');
+  }
+       )   
+
+      } 
+      /*
+      else if(userKaikyuu < bukiKaikyuu ) {
+        console.log("雇えない");
+        res.send("階級が足りません");
+      }
+        */
+      else if (userSyozikin < bouguNedan){
+        console.log("雇えない");
+        res.send("所持金が足りません");
+      }
+    })
+
+        });
 
          app.get('/syomotu', (req, res) => {
           
@@ -658,16 +796,66 @@ console.log(aaa + "人数");
        });
 
        app.post('/syomotu2/:id', (req, res) => { 
-        connection.query(
-   'UPDATE   user A , syomotu B SET A.syozikin = A.syozikin - B.nedan , A.syomotunonamae= B.namae, A.syomotu= B.iryoku WHERE A.username=? AND  B.id=?',
-    [res.locals.username,req.params.id],
-   (error,results) =>{
-     
-     res.redirect('/game');
-   }
-        )   
- 
-         });
+      
+        const getUserData = new Promise((resolve, reject) => {
+          connection.query(
+         'SELECT kaikyuu , syozikin , heisyu , heisuu FROM user WHERE username = ?',
+         [res.locals.username],
+          (error,results) =>{
+            console.log(results[0]);
+           resolve(results[0]);
+            return;
+          }
+          );
+        });
+
+const getsyomotuData = new Promise((resolve, reject) => {        
+connection.query(
+  'SELECT namae , iryoku , nedan FROM syomotu WHERE id = ?',
+  [req.params.id],
+    (error2,results2) =>{
+ console.log(results2[0]);
+   resolve(results2[0]);
+ return;
+    }
+);
+    });
+
+    Promise.all([getUserData, getsyomotuData])
+    .then(([userData, syomotuData]) => {
+      const  ninzuu = Number(req.body.ninzuu); 
+      const userKaikyuu = Number(userData.kaikyuu);
+      const userSyozikin = Number(userData.syozikin);
+      const userHeisyu = userData.heisyu;
+      const userHeisuu =  Number(userData.heisuu);
+      const syomotuNedan = Number(syomotuData.nedan);
+      const syomotuIryoku = Number(syomotuData.iryoku);
+      const syomotuNamae = syomotuData.namae;
+
+      if (userSyozikin >= syomotuNedan ) {
+        console.log("書物を買えます");
+       connection.query(
+ 'UPDATE   user A , syomotu B SET A.syozikin = A.syozikin - B.nedan , A.syomotunonamae= B.namae, A.syomotu= B.iryoku WHERE A.username=? AND  B.id=?',
+   [res.locals.username,req.params.id],
+  (error,results) =>{
+    res.redirect('/game');
+  }
+       )   
+
+      } 
+      /*
+      else if(userKaikyuu < bukiKaikyuu ) {
+        console.log("雇えない");
+        res.send("階級が足りません");
+      }
+        */
+      else if (userSyozikin < syomotuNedan){
+        console.log("雇えない");
+        res.send("所持金が足りません");
+      }
+    })
+
+        });
        
          app.get('/hata', (req, res) => {
           
@@ -685,16 +873,66 @@ console.log(aaa + "人数");
 
 
        app.post('/hata2/:id', (req, res) => { 
-        connection.query(
-   'UPDATE   user A , hata B SET A.syozikin = A.syozikin - B.nedan , A.hatanonamae= B.namae, A.hata= B.iryoku WHERE A.username=? AND  B.id=?',
-    [res.locals.username,req.params.id],
-   (error,results) =>{
-     
-     res.redirect('/game');
-   }
-        )   
- 
-         })
+   
+        const getUserData = new Promise((resolve, reject) => {
+          connection.query(
+         'SELECT kaikyuu , syozikin , heisyu , heisuu FROM user WHERE username = ?',
+         [res.locals.username],
+          (error,results) =>{
+            console.log(results[0]);
+           resolve(results[0]);
+            return;
+          }
+          );
+        });
+
+const gethataData = new Promise((resolve, reject) => {        
+connection.query(
+  'SELECT namae , iryoku , nedan FROM hata WHERE id = ?',
+  [req.params.id],
+    (error2,results2) =>{
+ console.log(results2[0]);
+   resolve(results2[0]);
+ return;
+    }
+);
+    });
+
+    Promise.all([getUserData, gethataData])
+    .then(([userData, hataData]) => {
+      const  ninzuu = Number(req.body.ninzuu); 
+      const userKaikyuu = Number(userData.kaikyuu);
+      const userSyozikin = Number(userData.syozikin);
+      const userHeisyu = userData.heisyu;
+      const userHeisuu =  Number(userData.heisuu);
+      const hataNedan = Number(hataData.nedan);
+      const hataIryoku = Number(hataData.iryoku);
+      const hataNamae = hataData.namae;
+
+      if (userSyozikin >= hataNedan ) {
+        console.log("旗を買えます");
+       connection.query(
+ 'UPDATE   user A , hata B SET A.syozikin = A.syozikin - B.nedan , A.hatanonamae= B.namae, A.hata= B.iryoku WHERE A.username=? AND  B.id=?',
+   [res.locals.username,req.params.id],
+  (error,results) =>{
+    res.redirect('/game');
+  }
+       )   
+
+      } 
+      /*
+      else if(userKaikyuu < bukiKaikyuu ) {
+        console.log("雇えない");
+        res.send("階級が足りません");
+      }
+        */
+      else if (userSyozikin < hataNedan){
+        console.log("雇えない");
+        res.send("所持金が足りません");
+      }
+    })
+
+        });
 
 
          app.get('/teki', (req, res) => {
@@ -762,8 +1000,8 @@ console.log(aaa + "人数");
     console.log(req.body.heisuu3);
     console.log("来てるきてる？");
      connection.query(
-      'UPDATE  user SET  heisuu=?, kaikyuu = kaikyuu + ?  WHERE username=?',
-      [req.body.heisuu3,req.body.keikenti,res.locals.username],
+      'UPDATE  user SET  heisuu=?, kaikyuu = kaikyuu + ? , syozikin= ? , kome=? WHERE username=?',
+      [req.body.heisuu3,req.body.keikenti,req.body.syozikin,req.body.kome,res.locals.username],
       (error,results) =>{
         res.redirect('/game');
        }
@@ -772,6 +1010,8 @@ console.log(aaa + "人数");
 
     });
 
+    /*
+    app.listen(7500);    
+    */
 
-
-app.listen(7500);
+app.listen(443);
